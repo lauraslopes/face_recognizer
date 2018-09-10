@@ -1,0 +1,48 @@
+Relatório trabalho 1 Visão Computacional
+Aluna: Laura Silva Lopes, GRR20163048
+
+Os caminhos (linha 149 e linha 150) até os diretórios com as imagens estão como:
+path_yale = 'yale_faces'
+path_orl = 'orl_faces'
+
+Estão implementados e executando corretamente no código:
+- Leitura do banco de imagens
+- Computação da face média
+- Computação das eigenfaces e implementação do método de reconhecimento pela Eigenface
+- Uso de validação cruzada para o reconhecimento
+
+Os datasets usados e suas características são: 
+    ORL (AT&T) Database -- 10 pessoas x 40 imagens, cada uma com 92x112 pixels e 256 níveis de cinza
+    The Yale Face Database -- 15 pessoas x 11 imagens, cada uma com 320x243 pixels
+
+A saída obtida foi:
+YALE dataset
+The accuracy for .centerlight images is 0.266666666667
+The accuracy for .glasses images is 0.666666666667
+The accuracy for .happy images is 0.8
+The accuracy for .leftlight images is 0.4
+The accuracy for .noglasses images is 1.0
+The accuracy for .normal images is 0.866666666667
+The accuracy for .rightlight images is 0.266666666667
+The accuracy for .sad images is 0.866666666667
+The accuracy for .sleepy images is 0.933333333333
+The accuracy for .surprised images is 0.533333333333
+The accuracy for .wink images is 0.666666666667
+The best image to classify is .noglasses and the worst is .centerlight
+
+ORL dataset
+The accuracy for images 1 is 0.558823529412
+The accuracy for images 2 is 0.741935483871
+The accuracy for images 3 is 0.617647058824
+The accuracy for images 4 is 0.592592592593
+The accuracy for images 5 is 0.612903225806
+The accuracy for images 6 is 0.59375
+The accuracy for images 7 is 0.5
+The accuracy for images 8 is 0.416666666667
+The accuracy for images 9 is 0.470588235294
+The accuracy for images 10 is 0.483870967742
+Mean accuracy: 0.558877776021
+Stand deviation accuracy: 0.0890770017773
+
+The training and testing took 100.396633863 seconds
+
