@@ -39,7 +39,7 @@ def get_images_and_labels_yale(path, test_class):
         for (x, y, w, h) in faces:
             width.append(w)
             height.append(h)
-            # se a imagem é da mesma classe que quero testar, adicionar à lista de imagens teste
+            # If image class is the same as test class, then append the image to the test images list
             if (label == test_class):
                 test_images.append(image[y: y + h, x: x + w])
                 test_labels.append(nbr)
@@ -65,8 +65,8 @@ def get_images_and_labels_orl(path, test_class):
     height = []
     labels = []
     for d in os.listdir(path):
-    	directory = os.path.join(path,d)
-    	image_paths = [os.path.join(directory, f) for f in os.listdir(directory)]
+        directory = os.path.join(path,d)
+        image_paths = [os.path.join(directory, f) for f in os.listdir(directory)]
 
         for image_path in image_paths:
             # Read the image
@@ -82,8 +82,8 @@ def get_images_and_labels_orl(path, test_class):
             for (x, y, w, h) in faces:
                 width.append(w)
                 height.append(h)
-                # se a imagem é da mesma classe que quero testar, adicionar à lista de imagens teste
-                if (class_image == (test_class+1)): #+1 pq as imagens começam do 1.pgm
+                # If image class is the same as test class, then append the image to the test images list
+                if (class_image == (test_class+1)): #+1 because images starts on 1.png
                     test_images.append(image[y: y + h, x: x + w])
                     test_labels.append(nbr)
                 else:
@@ -98,18 +98,18 @@ def get_images_and_labels_orl(path, test_class):
 
 def mean_face(images, height, width):
 
-	# percorrer todas as imagens dando resize
+	# Resize every image
 	for i in range(0, len(images)):
 		images[i] = cv2.resize(images[i], (height, width))
 		images[i] = images[i].flatten()
 
-    # calcular a face média
+    	# Calculate mean face
 	mean = np.mean(images, axis=0)
 
 	return mean
 
 def eigenface(images, mean_face):
-    new_images = [] #conterá as imagens subtraídas da ace média
+    new_images = [] #Will have the images - mean face
     eigenfaces = []
 
     #subtrair a face media de todas as imagens no conjunto de imagens
@@ -125,20 +125,20 @@ def eigenface(images, mean_face):
     #pegar os 5 maiores autovalores para calcular as autofaces
     for i in range (1, 6):
         eigenfaces.append(np.matmul(transpose, eigenvecs[index_in_order[len(index_in_order) - i]]))
-        
+
     #normalizar as autofaces
-    for i in range (0, 5): 
+    for i in range (0, 5):
         eigenfaces[i] = eigenfaces[i] / LA.norm(eigenfaces[i])
 
     return eigenfaces, new_images
 
 def classification(image, eigenfaces, images, mean_face):
     distances = []
-    
+
     #subtrair da imagem teste a face média
     image = image - mean_face
     projection = np.matmul(eigenfaces, image) # projecao da imagem que se quer reconhecer
-    for i in range (0, len(images)):     
+    for i in range (0, len(images)):
         proj = np.matmul(eigenfaces, images[i]) #calcula a projeção de cada imagem do dataset
         distances.append(LA.norm(projection - proj)) #distancia euclidiana das projecoes
     sort = np.argsort(distances) #ordena as distancias
@@ -164,7 +164,7 @@ for test_class in yale_classes:
     accuracy = 0
     for i in range (0, len(test_images)): #classificar cada imagem do vetor de testes
         test_images[i] = cv2.resize(test_images[i], (height_yale, width_yale)).flatten()
-        index = classification(test_images[i], eigenfaces_yale, mean_images_yale, mean_face_yale) 
+        index = classification(test_images[i], eigenfaces_yale, mean_images_yale, mean_face_yale)
         if (labels_yale[index] == test_labels[i]): #se a imagem pertence a mesma classe da que mais se aproxima
             correct = correct + 1
     #calcular a acurácia
