@@ -1,10 +1,5 @@
-#!/usr/bin/python
-# -*- coding: latin-1 -*-
-
-# Import the required modules
 import cv2, os, time
 import numpy as np
-from itertools import chain
 from scipy import linalg as LA
 from PIL import Image
 
@@ -64,10 +59,11 @@ def get_images_and_labels_orl(path, test_class):
     width = []
     height = []
     labels = []
-    for d in os.listdir(path):
-        directory = os.path.join(path,d)
-        image_paths = [os.path.join(directory, f) for f in os.listdir(directory)]
-
+    scan = os.scandir(path)
+    for d in scan:
+        if os.path.isdir(d) == False:
+            continue
+        image_paths = [os.path.join(d, f) for f in os.listdir(d)]
         for image_path in image_paths:
             # Read the image
             image_pil = Image.open(image_path)

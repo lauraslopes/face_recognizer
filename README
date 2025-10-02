@@ -46,3 +46,6 @@ Stand deviation accuracy: 0.0890770017773
 
 The training and testing took 100.396633863 seconds
 
+
+pip install -r requirements.txt
+
