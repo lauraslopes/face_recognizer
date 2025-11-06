@@ -1,10 +1,6 @@
 Relatório trabalho 1 Visão Computacional
 Aluna: Laura Silva Lopes, GRR20163048
 
-Os caminhos (linha 149 e linha 150) até os diretórios com as imagens estão como:
-path_yale = 'yale_faces'
-path_orl = 'orl_faces'
-
 Estão implementados e executando corretamente no código:
 - Leitura do banco de imagens
 - Computação da face média
@@ -12,8 +8,8 @@ Estão implementados e executando corretamente no código:
 - Uso de validação cruzada para o reconhecimento
 
 Os datasets usados e suas características são: 
-    ORL (AT&T) Database -- 10 pessoas x 40 imagens, cada uma com 92x112 pixels e 256 níveis de cinza
-    The Yale Face Database -- 15 pessoas x 11 imagens, cada uma com 320x243 pixels
+    ORL (AT&T) Database [http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html] -- 10 pessoas x 40 imagens, cada uma com 92x112 pixels e 256 níveis de cinza
+    The Yale Face Database [http://vision.ucsd.edu/content/yale-face-database] -- 15 pessoas x 11 imagens, cada uma com 320x243 pixels
 
 A saída obtida foi:
 YALE dataset
