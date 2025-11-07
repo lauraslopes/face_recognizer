@@ -21,13 +21,16 @@ class Dataset:
         self.test_images = []
         self.max_width = 0
         self.max_height = 0
+        self.mean_face = None
+        self.mean_images = []
+        self.eigenfaces = []
 
     """
         Append all the absolute image paths in a list image_paths
         We will not read the image with the .sad extension in the training set
         Rather, we will use them to test our accuracy of the training
     """
-    def get_images_and_labels(self, test_class):
+    def load_images_and_labels(self, test_class):
 
         image_paths = []
         for root, dirs, files in os.walk(self.path):
@@ -63,51 +66,37 @@ class Dataset:
                     self.labels.append(nbr)
 
 
-def mean_face(images, height, width):
+    def get_mean_face(self):
 
-	# Resize every image
-	for i in range(0, len(images)):
-		images[i] = cv2.resize(images[i], (height, width))
-		images[i] = images[i].flatten()
+        # Resize every image
+        for i in range(0, len(self.images)):
+            self.images[i] = cv2.resize(self.images[i], (self.max_height, self.max_width)).flatten()
 
-    	# Calculate mean face
-	mean = np.mean(images, axis=0)
+            # Calculate mean face
+        self.mean_face = np.mean(self.images, axis=0)
 
-	return mean
+    def eigenface(self):
+        new_images = [] #Will have the images - mean face
+        eigenfaces = []
 
-def eigenface(images, mean_face):
-    new_images = [] #Will have the images - mean face
-    eigenfaces = []
+        #subtrair a face media de todas as imagens no conjunto de imagens
+        for i in range (0, len(self.images)):
+            new_images.append(self.images[i] - self.mean_face)
+        #calcular matriz de covariancia
+        transpose = np.transpose(new_images)
+        covariance_matrix = np.matmul(new_images, transpose)
+        #calcular autovalores e autovetores
+        eigenvals, eigenvecs = LA.eig(covariance_matrix)
+        eigenvecs = np.real(eigenvecs)
+        index_in_order = np.argsort(eigenvals)
+        #pegar os 5 maiores autovalores para calcular as autofaces
+        for i in range (1, 6):
+            eigenfaces.append(np.matmul(transpose, eigenvecs[index_in_order[len(index_in_order) - i]]))
 
-    #subtrair a face media de todas as imagens no conjunto de imagens
-    for i in range (0, len(images)):
-        new_images.append(images[i] - mean_face)
-    #calcular matriz de covariancia
-    transpose = np.transpose(new_images)
-    covariance_matrix = np.matmul(new_images, transpose)
-    #calcular autovalores e autovetores
-    eigenvals, eigenvecs = LA.eig(covariance_matrix)
-    eigenvecs = np.real(eigenvecs)
-    index_in_order = np.argsort(eigenvals)
-    #pegar os 5 maiores autovalores para calcular as autofaces
-    for i in range (1, 6):
-        eigenfaces.append(np.matmul(transpose, eigenvecs[index_in_order[len(index_in_order) - i]]))
+        #normalizar as autofaces
+        for i in range (0, 5):
+            eigenfaces[i] = eigenfaces[i] / LA.norm(eigenfaces[i])
 
-    #normalizar as autofaces
-    for i in range (0, 5):
-        eigenfaces[i] = eigenfaces[i] / LA.norm(eigenfaces[i])
+        self.eigenfaces = eigenfaces
+        self.mean_images = new_images
 
-    return eigenfaces, new_images
-
-def classification(image, eigenfaces, images, mean_face):
-    distances = []
-
-    #subtrair da imagem teste a face média
-    image = image - mean_face
-    projection = np.matmul(eigenfaces, image) # projecao da imagem que se quer reconhecer
-    for i in range (0, len(images)):
-        proj = np.matmul(eigenfaces, images[i]) #calcula a projeção de cada imagem do dataset
-        distances.append(LA.norm(projection - proj)) #distancia euclidiana das projecoes
-    sort = np.argsort(distances) #ordena as distancias
-
-    return sort[0] #retorna o indice da menor distancia
