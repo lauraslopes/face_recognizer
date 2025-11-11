@@ -7,12 +7,12 @@ class Dataset:
     def __init__(self, type):
         self.type = type
         if self.type == 'yale':
-            self.path = 'yale_faces' # Path to the Yale Dataset
+            self.path = 'data/yale_faces' # Path to the Yale Dataset
         elif self.type == 'orl':
-            self.path = 'orl_faces' # Path to the ORL Dataset
+            self.path = 'data/orl_faces' # Path to the ORL Dataset
 
         # For face detection we will use the Haar Cascade provided by OpenCV.
-        cascadePath = "haarcascade_frontalface_default.xml"
+        cascadePath = "data/haarcascade_frontalface_default.xml"
         self.faceCascade = cv2.CascadeClassifier(cascadePath)
 
         self.images = [] # Will contains face images
@@ -45,10 +45,10 @@ class Dataset:
 
             # Get the label of the image
             if self.type == 'yale':
-                nbr = int(os.path.split(image_path)[1].split(".")[0].replace("subject", ""))
-                label = os.path.split(image_path)[1].split(".")[1]
+                nbr = int(os.path.split(image_path)[-1].split(".")[0].replace("subject", ""))
+                label = os.path.split(image_path)[-1].split(".")[1]
             elif self.type == 'orl':
-                nbr = int(os.path.split(image_path)[0].split("/")[1].replace("s", ""))
+                nbr = int(os.path.split(image_path)[0].split("/")[-1].replace("s", ""))
                 label = int(os.path.split(image_path)[1].split(".")[0])
             
             # Detect the face in the image
